@@ -1,7 +1,15 @@
 class APN::Notification < ActiveRecord::Base
+  include ::ActionView::Helpers::TextHelper
   set_table_name 'apn_notifications'
   
   belongs_to :device, :class_name => 'APN::Device'
+  
+  def alert=(message)
+    if !message.blank? && message.size > 150
+      message = truncate(message, :length => 150)
+    end
+    write_attribute('alert', message)
+  end
   
   # Creates a Hash that will be the payload of an APN.
   # 
@@ -35,9 +43,9 @@ class APN::Notification < ActiveRecord::Base
     self.apple_hash.to_json
   end
   
-  def apn_message_for_sending
+  def message_for_sending
     json = self.to_apple_json
-    message = "\0\0 #{self.device_token_hexa}\0#{json.length.chr}#{json}"
+    message = "\0\0 #{self.device.to_hexa}\0#{json.length.chr}#{json}"
     raise APN::Errors::ExceededMessageSizeError.new(message) if message.size.to_i > 256
     message
   end

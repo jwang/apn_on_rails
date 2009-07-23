@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'spec'
+require 'action_view'
 
 Dir.glob(File.join(File.dirname(__FILE__), 'extensions', '*.rb')).sort.each do |f|
   require f
