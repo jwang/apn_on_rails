@@ -20,6 +20,24 @@ describe APN::Device do
       device.token.should_not == "<#{token}>"
     end
     
+    it 'should be in the correct pattern' do
+      device = DeviceFactory.new(:token => '5gxadhy6 6zmtxfl6 5zpbcxmw ez3w7ksf qscpr55t trknkzap 7yyt45sc g6jrw7qz')
+      device.should be_valid
+      device.token = '5gxadhy6 6zmtxfl6 5zpbcxmw ez3w7ksf qscpr55t trknkzap 7yyt45sc g6'
+      device.should_not be_valid
+      device.token = '5gxadhy6 6zmtxfl6 5zpbcxmw ez3w7ksf qscpr55t trknkzap 7yyt45sc g6jrw7!!'
+      device.should_not be_valid
+    end
+    
+  end
+  
+  describe 'to_hexa' do
+    
+    it 'should convert the text string to hexadecimal' do
+      device = DeviceFactory.new(:token => '5gxadhy6 6zmtxfl6 5zpbcxmw ez3w7ksf qscpr55t trknkzap 7yyt45sc g6jrw7qz')
+      device.to_hexa.should == fixture_value('hexa.bin')
+    end
+    
   end
   
 end

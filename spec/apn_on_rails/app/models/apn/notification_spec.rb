@@ -19,4 +19,13 @@ describe APN::Notification do
     
   end
   
+  describe 'to_apple_json' do
+    
+    it 'should return the necessary JSON for Apple' do
+      noty = APN::Notification.first
+      noty.to_apple_json.should == %{{"aps":{"badge":5,"sound":"my_sound.aiff","alert":"Hello!"}}}
+    end
+    
+  end
+  
 end

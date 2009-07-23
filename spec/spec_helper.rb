@@ -32,3 +32,15 @@ Spec::Runner.configure do |config|
   end
   
 end
+
+def fixture_path(*name)
+  return File.join(File.dirname(__FILE__), 'fixtures', *name)
+end
+
+def fixture_value(*name)
+  return File.read(fixture_path(*name))
+end
+
+def write_fixture(name, value)
+  File.open(fixture_path(*name), 'w') {|f| f.write(value)}
+end

@@ -3,7 +3,20 @@ require 'openssl'
 require 'configatron'
 
 module APN
-end
+  
+  module Errors
+    
+    class ExceededMessageSizeError < StandardError
+      
+      def initialize(message)
+        super("The maximum size allowed for a notification payload is 256 bytes: '#{message}'")
+      end
+      
+    end
+    
+  end # Errors
+  
+end # APN
 
 Dir.glob(File.join(File.dirname(__FILE__), 'app', 'models', 'apn', '*.rb')).sort.each do |f|
   require f
