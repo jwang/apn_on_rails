@@ -65,8 +65,8 @@
 #   end
 # 
 #   def to_apple_json
-#     logger.debug "Sending #{self.apple_array.to_json}"
-#     self.apple_array.to_json
+#     logger.debug "Sending #{self.apple_hash.to_json}"
+#     self.apple_hash.to_json
 #   end
 # 
 #   def apn_message_for_sending
@@ -80,7 +80,7 @@
 #     [self.device_token.delete(' ')].pack('H*')
 #   end
 # 
-#   def apple_array
+#   def apple_hash
 #     result = {}
 #     result['aps'] = {}
 #     result['aps']['alert'] = alert if alert

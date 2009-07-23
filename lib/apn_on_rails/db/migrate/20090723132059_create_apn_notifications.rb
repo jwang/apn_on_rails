@@ -8,8 +8,8 @@ class CreateApnNotifications < ActiveRecord::Migration
       t.string :device_language, :size => 5 # if you don't want to send localized strings
       t.text :payload
       t.string :sound
+      t.string :alert
       t.integer :badge
-      t.text :app_data
       t.datetime :sent_at
       t.timestamps
     end
@@ -22,11 +22,3 @@ class CreateApnNotifications < ActiveRecord::Migration
   end
   
 end
-
-# add_column :apple_push_notifications, :payload, :text
-# add_column :apple_push_notifications, :sound, :string
-# add_column :apple_push_notifications, :badge, :integer
-# add_column :apple_push_notifications, :alert, :string
-# add_column :apple_push_notifications, :appdata, :text
-# add_column :apple_push_notifications, :sent_at, :datetime
-# add_column :apple_push_notifications, :device_id, :integer
