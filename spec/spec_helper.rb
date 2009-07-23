@@ -14,6 +14,8 @@ Dir.glob(File.join(File.dirname(__FILE__), 'factories', '*.rb')).sort.each do |f
   require f
 end
 
+configatron.apn.cert = File.expand_path(File.join(File.dirname(__FILE__), 'rails_root', 'config', 'apple_push_notification_development.pem'))
+
 Spec::Runner.configure do |config|
   
   config.before(:all) do
@@ -44,4 +46,8 @@ end
 
 def write_fixture(name, value)
   File.open(fixture_path(*name), 'w') {|f| f.write(value)}
+end
+
+def apn_cert
+  File.read(File.join(File.dirname(__FILE__), 'rails_root', 'config', 'apple_push_notification_development.pem'))
 end

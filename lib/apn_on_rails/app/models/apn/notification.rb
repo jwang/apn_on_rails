@@ -51,4 +51,29 @@ class APN::Notification < ActiveRecord::Base
     message
   end
   
-end
+  class << self
+    
+    def send_notifications(notifications)
+      cert = File.read(configatron.apn.cert)
+      ctx = OpenSSL::SSL::SSLContext.new
+      ctx.key = OpenSSL::PKey::RSA.new(cert, configatron.apn.passphrase)
+      ctx.cert = OpenSSL::X509::Certificate.new(cert)
+  
+      s = TCPSocket.new(configatron.apn.host, configatron.apn.port)
+      ssl = OpenSSL::SSL::SSLSocket.new(s, ctx)
+      ssl.sync = true
+      ssl.connect
+  
+      notifications.each do |noty|
+        ssl.write(noty.message_for_sending)
+        noty.sent_at = Time.now
+        noty.save
+      end
+  
+      ssl.close
+      s.close
+    end
+    
+  end # class << self
+  
+end # APN::Notification
