@@ -1,4 +1,4 @@
-class CreateApnNotifications < ActiveRecord::Migration
+class CreateApnNotifications < ActiveRecord::Migration # :nodoc:
   
   def self.up
 

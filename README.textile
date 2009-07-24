@@ -1,16 +1,16 @@
-=APN on Rails (Apple Push Notifications on Rails)
+h1. APN on Rails (Apple Push Notifications on Rails)
 
 APN on Rails is a Ruby on Rails gem that allows you to easily add Apple Push Notification (iPhone)
 support to your Rails application.
 
-==Acknowledgements:
+h2. Acknowledgements:
 
 This gem is a re-write of a plugin that was written by Fabien Penso and Sam Soffes.
 Their plugin was a great start, but it just didn't quite reach the level I hoped it would.
 I've re-written, as a gem, added a ton of tests, and I would like to think that I made it
 a little nicer and easier to use.
 
-==Converting Your Certificate:
+h2. Converting Your Certificate:
 
 Once you have the certificate from Apple for your application, export your key
 and the apple certificate as p12 files. Here is a quick walkthrough on how to do this:
@@ -20,59 +20,68 @@ and the apple certificate as p12 files. Here is a quick walkthrough on how to do
 3. Choose the p12 format from the drop down and name it `cert.p12`. 
 
 Now covert the p12 file to a pem file:
-
+<pre><code>
   $ openssl pkcs12 -in cert.p12 -out apple_push_notification_production.pem -nodes -clcerts
+</code></pre>
 
 Put 'apple_push_notification_production.pem' in config/
 
 If you are using a development certificate, then change the name to apple_push_notification_development.pem instead.
 
-==Installing:
+h2. Installing:
 
-===Stable (RubyForge):
-
+h3. Stable (RubyForge):
+<pre><code>
   $ sudo gem install apn_on_rails
+</code></pre>
 
-===Edge (GitHub):
-
+h3. Edge (GitHub):
+<pre><code>
   $ sudo gem install markbates-apn_on_rails --source=http://gems.github.com
+</code></pre>
 
-===Rails Gem Management:
+h3. Rails Gem Management:
 
 If you like to use the built in Rails gem management:
-
+<pre><code>
   config.gem 'apn_on_rails'
+</code></pre>
 
 Or, if you like to live on the edge:
-
+<pre><code>
   config.gem 'markbates-apn_on_rails', :lib => 'apn_on_rails', :source => 'http://gems.github.com'
+</code></pre>
 
-==Setup and Configuration:
+h2. Setup and Configuration:
 
 Once you have the gem installed via your favorite gem installation, you need to require it so you can
 start to use it:
 
 Add the following require, wherever it makes sense to you:
-
+<pre><code>
   require 'apn_on_rails'
+</code></pre>
 
 You also need to add the following to your Rakefile so you can use the
 Rake tasks that ship with APN on Rails:
-
+<pre><code>
   begin
     require 'apn_on_rails_tasks'
   rescue MissingSourceFile => e
     puts e.message
   end
+</code></pre>
 
 Now, to create the tables you need for APN on Rails, run the following task:
-
+<pre><code>
   $ rake apn:db:migrate
+</code></pre>
 
 APN on Rails uses the Configatron gem, http://github.com/markbates/configatron/tree/master, 
 to configure itself. APN on Rails has the following default configurations that you change as you
 see fit:
 
+<pre><code>
   configatron.apn.passphrase # => ''
   configatron.apn.port # => 2195
   configatron.apn.host # => 'gateway.sandbox.push.apple.com'
@@ -81,11 +90,13 @@ see fit:
   # production:
   configatron.apn.host # => 'gateway.push.apple.com'
   configatron.apn.cert #=> File.join(RAILS_ROOT, 'config', 'apple_push_notification_production.pem')
+</code></pre>
 
 That's it, now you're ready to start creating notifications.
 
-==Example:
+h2. Example:
 
+<pre><code>
   $ ./script/console
   >> device = APN::Device.create(:token => "XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX")
   >> notification = APN::Notification.new
@@ -95,9 +106,11 @@ That's it, now you're ready to start creating notifications.
   >> notification.alert = "foobar"
   >> notification.save
   >> APN::Notification.send_notifications
+</code></pre>
 
 You can also run the following Rake task to send your notifications:
-
+<pre><code>
   $ rake apn:notifications:deliver
+</code></pre>
 
 Released under the MIT license.

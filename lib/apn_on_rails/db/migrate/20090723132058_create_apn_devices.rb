@@ -1,4 +1,4 @@
-class CreateApnDevices < ActiveRecord::Migration
+class CreateApnDevices < ActiveRecord::Migratio # :nodoc:
   def self.up
     create_table :apn_devices do |t|
       t.text :token, :size => 71, :null => false

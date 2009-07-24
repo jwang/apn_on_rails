@@ -1,3 +1,19 @@
+# Represents the message you wish to send. 
+# An APN::Notification belongs to an APN::Device.
+# 
+# Example:
+#   apn = APN::Notification.new
+#   apn.badge = 5
+#   apn.sound = 'my_sound.aiff'
+#   apn.alert = 'Hello!'
+#   apn.device = APN::Device.find(1)
+#   apn.save
+# 
+# To deliver call the following method:
+#   APN::Notification.send_notifications
+# 
+# As each APN::Notification is sent the <tt>sent_at</tt> column will be timestamped,
+# so as to not be sent again.
 class APN::Notification < ActiveRecord::Base
   include ::ActionView::Helpers::TextHelper
   extend ::ActionView::Helpers::TextHelper
@@ -6,6 +22,10 @@ class APN::Notification < ActiveRecord::Base
   
   belongs_to :device, :class_name => 'APN::Device'
   
+  # Stores the text alert message you want to send to the device.
+  # 
+  # If the message is over 150 characters long it will get truncated
+  # to 150 characters with a <tt>...</tt>
   def alert=(message)
     if !message.blank? && message.size > 150
       message = truncate(message, :length => 150)
@@ -55,6 +75,15 @@ class APN::Notification < ActiveRecord::Base
   
   class << self
     
+    # Opens a connection to the Apple APN server and attempts to batch deliver
+    # an Array of notifications.
+    # 
+    # This method expects an Array of APN::Notifications. If no parameter is passed
+    # in then it will use the following:
+    #   APN::Notification.all(:conditions => {:sent_at => nil})
+    # 
+    # As each APN::Notification is sent the <tt>sent_at</tt> column will be timestamped,
+    # so as to not be sent again.
     def send_notifications(notifications = APN::Notification.all(:conditions => {:sent_at => nil}))
       unless notifications.nil? || notifications.empty?
         logger.info "APN: Attempting to deliver #{pluralize(notifications.size, 'notification')}."

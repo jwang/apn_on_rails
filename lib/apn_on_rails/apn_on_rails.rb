@@ -22,13 +22,14 @@ if rails_env == 'production'
   configatron.apn.set_default(:cert, File.join(rails_root, 'config', 'apple_push_notification_production.pem'))
 end
 
-module APN
+module APN # :nodoc:
   
-  module Errors
+  module Errors # :nodoc:
     
+    # Raised when a notification message to Apple is longer than 256 bytes.
     class ExceededMessageSizeError < StandardError
       
-      def initialize(message)
+      def initialize(message) # :nodoc:
         super("The maximum size allowed for a notification payload is 256 bytes: '#{message}'")
       end
       
