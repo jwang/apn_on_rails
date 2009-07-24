@@ -44,8 +44,8 @@ If you like to use the built in Rails gem management:
 Or, if you like to live on the edge:
   config.gem 'markbates-apn_on_rails', :lib => 'apn_on_rails', :source => 'http://gems.github.com'
   
-Setup
------
+Setup and Configuration
+-----------------------
 Once you have the gem installed you need to add the following to your Rakefile so you can use the
 Rake tasks that ship with APN on Rails:
   begin
@@ -57,20 +57,32 @@ Rake tasks that ship with APN on Rails:
 Now, to create the tables you need for APN on Rails, run the following task:
   $ rake apn:db:migrate
 
+APN on Rails uses the Configatron gem, http://github.com/markbates/configatron/tree/master, 
+to configure itself. APN on Rails has the following default configurations that you change as you
+see fit:
+
+  configatron.apn.passphrase # => ''
+  configatron.apn.port # => 2195
+  configatron.apn.host # => 'gateway.sandbox.push.apple.com'
+  configatron.apn.cert #=> File.join(RAILS_ROOT, 'config', 'apple_push_notification_development.pem')
+  
+  # production:
+  configatron.apn.host # => 'gateway.push.apple.com'
+  configatron.apn.cert #=> File.join(RAILS_ROOT, 'config', 'apple_push_notification_production.pem')
+
 That's it, now you're ready to start creating notifications.
 
 Example
 -------
 
-*Note: the spaces in `device_token` are optional.*
-
     $ ./script/console
-    >> a = ApplePushNotification.new
-    >> a.device_token = "XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX"
-    >> a.badge = 5
-    >> a.sound = true
-    >> a.alert = "foobar"
-    >> a.send_notification
-    => nil
+    >> device = APN::Device.create(:token => "XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX")
+    >> notification = APN::Notification.new
+    >> notification.device = device
+    >> notification.badge = 5
+    >> notification.sound = true
+    >> notification.alert = "foobar"
+    >> notification.save
+    >> APN::Notification.send_notifications
 
-Copyright (c) 2009 Fabien Penso. Released under the MIT license. Modified by [Sam Soffes](http://samsoff.es).
+Released under the MIT license.

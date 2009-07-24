@@ -1,5 +1,7 @@
 class APN::Notification < ActiveRecord::Base
   include ::ActionView::Helpers::TextHelper
+  extend ::ActionView::Helpers::TextHelper
+  
   set_table_name 'apn_notifications'
   
   belongs_to :device, :class_name => 'APN::Device'
@@ -53,25 +55,28 @@ class APN::Notification < ActiveRecord::Base
   
   class << self
     
-    def send_notifications(notifications)
-      cert = File.read(configatron.apn.cert)
-      ctx = OpenSSL::SSL::SSLContext.new
-      ctx.key = OpenSSL::PKey::RSA.new(cert, configatron.apn.passphrase)
-      ctx.cert = OpenSSL::X509::Certificate.new(cert)
+    def send_notifications(notifications = APN::Notification.all(:conditions => {:sent_at => nil}))
+      unless notifications.nil? || notifications.empty?
+        logger.info "APN: Attempting to deliver #{pluralize(notifications.size, 'notification')}."
+        cert = File.read(configatron.apn.cert)
+        ctx = OpenSSL::SSL::SSLContext.new
+        ctx.key = OpenSSL::PKey::RSA.new(cert, configatron.apn.passphrase)
+        ctx.cert = OpenSSL::X509::Certificate.new(cert)
   
-      s = TCPSocket.new(configatron.apn.host, configatron.apn.port)
-      ssl = OpenSSL::SSL::SSLSocket.new(s, ctx)
-      ssl.sync = true
-      ssl.connect
+        s = TCPSocket.new(configatron.apn.host, configatron.apn.port)
+        ssl = OpenSSL::SSL::SSLSocket.new(s, ctx)
+        ssl.sync = true
+        ssl.connect
   
-      notifications.each do |noty|
-        ssl.write(noty.message_for_sending)
-        noty.sent_at = Time.now
-        noty.save
+        notifications.each do |noty|
+          ssl.write(noty.message_for_sending)
+          noty.sent_at = Time.now
+          noty.save
+        end
+  
+        ssl.close
+        s.close
       end
-  
-      ssl.close
-      s.close
     end
     
   end # class << self
