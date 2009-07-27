@@ -74,7 +74,7 @@ Rake tasks that ship with APN on Rails:
 
 Now, to create the tables you need for APN on Rails, run the following task:
 <pre><code>
-  $ rake apn:db:migrate
+  $ ruby script/generate apn_migrations
 </code></pre>
 
 APN on Rails uses the Configatron gem, http://github.com/markbates/configatron/tree/master, 
