@@ -94,10 +94,15 @@ That's it, now you're ready to start creating notifications.
   >> notification.sound = true
   >> notification.alert = "foobar"
   >> notification.save
-  >> APN::Notification.send_notifications
 
-You can also run the following Rake task to send your notifications:
+You can use the following Rake task to deliver your notifications:
 
   $ rake apn:notifications:deliver
+
+The Rake task will find any unsent notifications in the database. If there aren't any notifications
+it will simply do nothing. If there are notifications waiting to be delivered it will open a single connection
+to Apple and push all the notifications through that one connection. Apple does not like people opening/closing
+connections constantly, so it's pretty important that you are careful about batching up your notifications so
+Apple doesn't shut you down.
 
 Released under the MIT license.
