@@ -87,7 +87,7 @@ class APN::Notification < ActiveRecord::Base
     def send_notifications(notifications = APN::Notification.all(:conditions => {:sent_at => nil}))
       unless notifications.nil? || notifications.empty?
 
-        APN::Connection.open_for_delivery do |conn|
+        APN::Connection.open_for_delivery do |conn, sock|
           notifications.each do |noty|
             conn.write(noty.message_for_sending)
             noty.sent_at = Time.now
