@@ -86,25 +86,15 @@ class APN::Notification < ActiveRecord::Base
     # so as to not be sent again.
     def send_notifications(notifications = APN::Notification.all(:conditions => {:sent_at => nil}))
       unless notifications.nil? || notifications.empty?
-        logger.info "APN: Attempting to deliver #{pluralize(notifications.size, 'notification')}."
-        cert = File.read(configatron.apn.cert)
-        ctx = OpenSSL::SSL::SSLContext.new
-        ctx.key = OpenSSL::PKey::RSA.new(cert, configatron.apn.passphrase)
-        ctx.cert = OpenSSL::X509::Certificate.new(cert)
-  
-        s = TCPSocket.new(configatron.apn.host, configatron.apn.port)
-        ssl = OpenSSL::SSL::SSLSocket.new(s, ctx)
-        ssl.sync = true
-        ssl.connect
-  
-        notifications.each do |noty|
-          ssl.write(noty.message_for_sending)
-          noty.sent_at = Time.now
-          noty.save
+
+        APN::Connection.open_for_delivery do |conn|
+          notifications.each do |noty|
+            conn.write(noty.message_for_sending)
+            noty.sent_at = Time.now
+            noty.save
+          end
         end
-  
-        ssl.close
-        s.close
+
       end
     end
     

@@ -4,7 +4,7 @@ require 'gemstub'
 Gemstub.test_framework = :rspec
 
 Gemstub.gem_spec do |s|
-  s.version = "0.2.1"
+  s.version = "0.2.2"
   s.rubyforge_project = "magrathea"
   s.add_dependency('configatron')
   s.email = 'mark@markbates.com'
