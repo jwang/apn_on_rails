@@ -70,7 +70,7 @@ describe APN::Notification do
       ssl_mock = mock('ssl_mock')
       ssl_mock.should_receive(:write).with('message-0')
       ssl_mock.should_receive(:write).with('message-1')
-      APN::Connection.should_receive(:open_for_delivery).and_yield(ssl_mock)
+      APN::Connection.should_receive(:open_for_delivery).and_yield(ssl_mock, nil)
       
       APN::Notification.send_notifications(notifications)
       

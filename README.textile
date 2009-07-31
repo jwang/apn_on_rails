@@ -94,6 +94,15 @@ see fit:
 
 That's it, now you're ready to start creating notifications.
 
+h3. Upgrade Notes:
+
+If you are upgrading to a new version of APN on Rails you should always run:
+<pre><code>
+  $ ruby script/generate apn_migrations
+</code></pre>
+
+That way you ensure you have the latest version of the database tables needed.
+
 h2. Example:
 
 <pre><code>

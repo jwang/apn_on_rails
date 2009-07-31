@@ -51,3 +51,6 @@ end
 def apn_cert
   File.read(File.join(File.dirname(__FILE__), 'rails_root', 'config', 'apple_push_notification_development.pem'))
 end
+
+class BlockRan < StandardError
+end

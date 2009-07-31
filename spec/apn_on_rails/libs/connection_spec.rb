@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), '..', '..', '..', '..', 'spec_helper.rb')
+require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe APN::Connection do
 
@@ -28,7 +28,7 @@ describe APN::Connection do
       ssl_mock.should_receive(:close)
       OpenSSL::SSL::SSLSocket.should_receive(:new).with(tcp_mock, ctx_mock).and_return(ssl_mock)
       
-      APN::Connection.open_for_delivery do |conn|
+      APN::Connection.open_for_delivery do |conn, sock|
         conn.write('message-0')
         conn.write('message-1')
       end

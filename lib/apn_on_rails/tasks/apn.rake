@@ -9,4 +9,13 @@ namespace :apn do
     
   end # notifications
   
+  namespace :feedback do
+    
+    desc "Process all devices that have feedback from APN."
+    task :process => [:environment] do
+      APN::Feedback.process_devices
+    end
+    
+  end
+  
 end # apn

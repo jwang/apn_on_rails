@@ -9,11 +9,13 @@ class ApnMigrationsGenerator < Rails::Generator::Base
       
       m.directory(db_migrate_path)
       
-      ['001_create_apn_devices', '002_create_apn_notifications'].each_with_index do |f, i|
+      Dir.glob(File.join(File.dirname(__FILE__), 'templates', 'apn_migrations', '*.rb')).sort.each_with_index do |f, i|
+        f = File.basename(f)
+        f.match(/\d+\_(.+)/)
         timestamp = timestamp.succ
-        if Dir.glob(File.join(db_migrate_path, "*_#{f}.rb")).empty?
-          m.file(File.join('apn_migrations', "#{f}.rb"), 
-                 File.join(db_migrate_path, "#{timestamp}_#{f}.rb"), 
+        if Dir.glob(File.join(db_migrate_path, "*_#{$1}")).empty?
+          m.file(File.join('apn_migrations', f), 
+                 File.join(db_migrate_path, "#{timestamp}_#{$1}"), 
                  {:collision => :skip})
         end
       end
