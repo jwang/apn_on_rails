@@ -1,7 +1,7 @@
 class AddRegisteredAtToApnDevices < ActiveRecord::Migration # :nodoc:
   
-  module APN
-    class Device < ActiveRecord::Base
+  module APN # :nodoc:
+    class Device < ActiveRecord::Base # :nodoc:
       set_table_name 'apn_devices'
     end
   end
@@ -14,6 +14,7 @@ class AddRegisteredAtToApnDevices < ActiveRecord::Migration # :nodoc:
       device.save!
     end
     
+    add_index :apn_devices, :token
   end
 
   def self.down

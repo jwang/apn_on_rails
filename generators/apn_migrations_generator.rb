@@ -1,5 +1,9 @@
 require 'rails_generator'
-# Generates the migrations necessary for APN on Rails
+# Generates the migrations necessary for APN on Rails.
+# This should be run upon install and upgrade of the 
+# APN on Rails gem.
+# 
+#   $ ruby script/generate apn_migrations
 class ApnMigrationsGenerator < Rails::Generator::Base
   
   def manifest # :nodoc:

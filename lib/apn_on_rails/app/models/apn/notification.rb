@@ -82,6 +82,9 @@ class APN::Notification < APN::Base
     # 
     # As each APN::Notification is sent the <tt>sent_at</tt> column will be timestamped,
     # so as to not be sent again.
+    # 
+    # This can be run from the following Rake task:
+    #   $ rake apn:notifications:deliver
     def send_notifications(notifications = APN::Notification.all(:conditions => {:sent_at => nil}))
       unless notifications.nil? || notifications.empty?
 

@@ -28,6 +28,16 @@ module APN
         return devices
       end # devices
       
+      # Retrieves a list of APN::Device instnces from Apple using
+      # the <tt>devices</tt> method. It then checks to see if the
+      # <tt>last_registered_at</tt> date of each APN::Device is
+      # before the date that Apple says the device is no longer
+      # accepting notifications then the device is deleted. Otherwise
+      # it is assumed that the application has been re-installed
+      # and is available for notifications.
+      # 
+      # This can be run from the following Rake task:
+      #   $ rake apn:feedback:process
       def process_devices
         APN::Feedback.devices.each do |device|
           if device.last_registered_at < device.feedback_at
