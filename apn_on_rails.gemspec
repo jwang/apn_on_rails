@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{apn_on_rails}
-  s.version = "0.3.0.20090731174823"
+  s.version = "0.3.0.20090731234417"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["markbates"]

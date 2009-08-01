@@ -1,4 +1,4 @@
-class AddRegisteredAtToApnDevices < ActiveRecord::Migration # :nodoc:
+class AlterApnDevices < ActiveRecord::Migration # :nodoc:
   
   module APN # :nodoc:
     class Device < ActiveRecord::Base # :nodoc:
@@ -13,11 +13,13 @@ class AddRegisteredAtToApnDevices < ActiveRecord::Migration # :nodoc:
       device.last_registered_at = device.created_at
       device.save!
     end
-    
-    add_index :apn_devices, :token
+    change_column :apn_devices, :token, :string, :size => 100, :null => false
+    add_index :apn_devices, :token, :unique => true
   end
 
   def self.down
+    change_column :apn_devices, :token, :string
+    remove_index :apn_devices, :column => :token
     remove_column :apn_devices, :last_registered_at
   end
 end
