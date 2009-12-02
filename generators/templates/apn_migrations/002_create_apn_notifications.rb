@@ -9,6 +9,7 @@ class CreateApnNotifications < ActiveRecord::Migration # :nodoc:
       t.string :sound
       t.string :alert, :size => 150
       t.integer :badge
+      t.text :custom_properties
       t.datetime :sent_at
       t.timestamps
     end

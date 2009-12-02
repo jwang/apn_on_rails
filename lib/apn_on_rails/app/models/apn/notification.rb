@@ -17,6 +17,7 @@
 class APN::Notification < APN::Base
   include ::ActionView::Helpers::TextHelper
   extend ::ActionView::Helpers::TextHelper
+  serialize :custom_properties
   
   belongs_to :device, :class_name => 'APN::Device'
   
@@ -39,6 +40,13 @@ class APN::Notification < APN::Base
   #   apn.sound = 'my_sound.aiff'
   #   apn.alert = 'Hello!'
   #   apn.apple_hash # => {"aps" => {"badge" => 5, "sound" => "my_sound.aiff", "alert" => "Hello!"}}
+  #
+  # Example 2: 
+  #   apn = APN::Notification.new
+  #   apn.badge = 0
+  #   apn.sound = true
+  #   apn.custom_properties = {"typ" => 1}
+  #   apn.apple_hast # => {"aps" => {"badge" => 0}}
   def apple_hash
     result = {}
     result['aps'] = {}
@@ -47,6 +55,11 @@ class APN::Notification < APN::Base
     if self.sound
       result['aps']['sound'] = self.sound if self.sound.is_a? String
       result['aps']['sound'] = "1.aiff" if self.sound.is_a?(TrueClass)
+    end
+    if self.custom_properties
+      self.custom_properties.each do |key,value|
+        result["#{key}"] = "#{value}"
+      end
     end
     result
   end
@@ -90,6 +103,7 @@ class APN::Notification < APN::Base
 
         APN::Connection.open_for_delivery do |conn, sock|
           notifications.each do |noty|
+            puts "\n\napple has is: #{noty.apple_hash}\n\n"
             conn.write(noty.message_for_sending)
             noty.sent_at = Time.now
             noty.save
