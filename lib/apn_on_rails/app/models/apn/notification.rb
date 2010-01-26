@@ -103,7 +103,6 @@ class APN::Notification < APN::Base
 
         APN::Connection.open_for_delivery do |conn, sock|
           notifications.each do |noty|
-            puts "\n\napple has is: #{noty.apple_hash}\n\n"
             conn.write(noty.message_for_sending)
             noty.sent_at = Time.now
             noty.save

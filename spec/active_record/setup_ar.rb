@@ -11,7 +11,7 @@ FileUtils.rm(db_file) if File.exists?(db_file)
 
 ActiveRecord::Base.establish_connection({
   :adapter => 'sqlite3',
-  :dbfile => db_file
+  :database => db_file
 })
 
 ActiveRecord::Migrator.up(File.join(File.dirname(__FILE__), '..', '..', 'generators', 'templates', 'apn_migrations'))
