@@ -57,6 +57,11 @@ end
   path = File.join(File.dirname(__FILE__), 'app', dir)
   $LOAD_PATH << path 
   # puts "Adding #{path}"
+  begin 
   ActiveSupport::Dependencies.load_paths << path 
   ActiveSupport::Dependencies.load_once_paths.delete(path) 
+  rescue NameError
+    Dependencies.load_paths << path 
+    Dependencies.load_once_paths.delete(path) 
+  end
 end
