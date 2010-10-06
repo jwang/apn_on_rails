@@ -14,5 +14,5 @@ group :development do
   gem "jeweler", "~> 1.5.0.pre2"
   gem "rcov", ">= 0"
   gem "actionpack", '~> 2.3.8'
-  gem 'activerecord', "~> 2.3.8"
+  gem 'activerecord', "~> 2.3.8", :require => 'active_record'
 end
