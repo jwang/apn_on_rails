@@ -45,9 +45,18 @@ module APN # :nodoc:
       
     end
     
+    class MissingCertificateError < StandardError
+      def initialize
+        super("This app has no certificate")
+      end
+    end
+    
   end # Errors
   
 end # APN
+
+base = File.join(File.dirname(__FILE__), 'app', 'models', 'apn', 'base.rb')
+require base
 
 Dir.glob(File.join(File.dirname(__FILE__), 'app', 'models', 'apn', '*.rb')).sort.each do |f|
   require f
@@ -57,11 +66,6 @@ end
   path = File.join(File.dirname(__FILE__), 'app', dir)
   $LOAD_PATH << path 
   # puts "Adding #{path}"
-  begin 
   ActiveSupport::Dependencies.load_paths << path 
   ActiveSupport::Dependencies.load_once_paths.delete(path) 
-  rescue NameError
-    Dependencies.load_paths << path 
-    Dependencies.load_once_paths.delete(path) 
-  end
 end

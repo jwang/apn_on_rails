@@ -6,7 +6,7 @@ describe APN::Connection do
     
     it 'should create a connection to Apple, yield it, and then close' do
       rsa_mock = mock('rsa_mock')
-      OpenSSL::PKey::RSA.should_receive(:new).with(apn_cert, '').and_return(rsa_mock)
+      OpenSSL::PKey::RSA.should_receive(:new).and_return(rsa_mock)
 
       cert_mock = mock('cert_mock')
       OpenSSL::X509::Certificate.should_receive(:new).and_return(cert_mock)

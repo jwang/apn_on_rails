@@ -7,6 +7,7 @@ describe APN::Feedback do
     before(:each) do
       @time = Time.now
       @device = DeviceFactory.create
+      @cert = mock('cert_mock')
       
       @data_mock = mock('data_mock')
       @data_mock.should_receive(:strip!)
@@ -21,7 +22,7 @@ describe APN::Feedback do
     it 'should an Array of devices that need to be processed' do
       APN::Connection.should_receive(:open_for_feedback).and_yield(@ssl_mock, @sock_mock)
       
-      devices = APN::Feedback.devices
+      devices = APN::Feedback.devices(@cert)
       devices.size.should == 1
       r_device = devices.first
       r_device.token.should == @device.token
@@ -31,25 +32,12 @@ describe APN::Feedback do
     it 'should yield up each device' do
       APN::Connection.should_receive(:open_for_feedback).and_yield(@ssl_mock, @sock_mock)
       lambda {
-        APN::Feedback.devices do |r_device|
+        APN::Feedback.devices(@cert) do |r_device|
           r_device.token.should == @device.token
           r_device.feedback_at.to_s.should == @time.to_s
           raise BlockRan.new
         end
       }.should raise_error(BlockRan)
-    end
-    
-  end
-  
-  describe 'process_devices' do
-    
-    it 'should destroy devices that have a last_registered_at date that is before the feedback_at date' do
-      devices = [DeviceFactory.create(:last_registered_at => 1.week.ago, :feedback_at => Time.now),
-                 DeviceFactory.create(:last_registered_at => 1.week.from_now, :feedback_at => Time.now)]
-      APN::Feedback.should_receive(:devices).and_return(devices)
-      lambda {
-        APN::Feedback.process_devices
-      }.should change(APN::Device, :count).by(-1)
     end
     
   end

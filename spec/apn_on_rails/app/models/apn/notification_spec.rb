@@ -56,26 +56,4 @@ describe APN::Notification do
     
   end
   
-  describe 'send_notifications' do
-    
-    it 'should send the notifications in an Array' do
-      
-      notifications = [NotificationFactory.create, NotificationFactory.create]
-      notifications.each_with_index do |notify, i|
-        notify.stub(:message_for_sending).and_return("message-#{i}")
-        notify.should_receive(:sent_at=).with(instance_of(Time))
-        notify.should_receive(:save)
-      end
-      
-      ssl_mock = mock('ssl_mock')
-      ssl_mock.should_receive(:write).with('message-0')
-      ssl_mock.should_receive(:write).with('message-1')
-      APN::Connection.should_receive(:open_for_delivery).and_yield(ssl_mock, nil)
-      
-      APN::Notification.send_notifications(notifications)
-      
-    end
-    
-  end
-  
 end

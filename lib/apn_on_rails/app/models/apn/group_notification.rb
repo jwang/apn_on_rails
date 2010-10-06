@@ -1,26 +1,17 @@
-# Represents the message you wish to send. 
-# An APN::Notification belongs to an APN::Device.
-# 
-# Example:
-#   apn = APN::Notification.new
-#   apn.badge = 5
-#   apn.sound = 'my_sound.aiff'
-#   apn.alert = 'Hello!'
-#   apn.device = APN::Device.find(1)
-#   apn.save
-# 
-# To deliver call the following method:
-#   APN::Notification.send_notifications
-# 
-# As each APN::Notification is sent the <tt>sent_at</tt> column will be timestamped,
-# so as to not be sent again.
-class APN::Notification < APN::Base
+class APN::GroupNotification < APN::Base
   include ::ActionView::Helpers::TextHelper
   extend ::ActionView::Helpers::TextHelper
   serialize :custom_properties
   
-  belongs_to :device, :class_name => 'APN::Device'
-  has_one    :app,    :class_name => 'APN::App', :through => :device
+  belongs_to :group, :class_name => 'APN::Group'
+  has_one    :app, :class_name => 'APN::App', :through => :group
+  has_many   :device_groupings, :through => :group
+  
+  validates_presence_of :group_id
+  
+  def devices
+    self.group.devices
+  end
   
   # Stores the text alert message you want to send to the device.
   # 
@@ -78,16 +69,11 @@ class APN::Notification < APN::Base
   end
   
   # Creates the binary message needed to send to Apple.
-  def message_for_sending
+  def message_for_sending(device)
     json = self.to_apple_json
-    message = "\0\0 #{self.device.to_hexa}\0#{json.length.chr}#{json}"
+    message = "\0\0 #{device.to_hexa}\0#{json.length.chr}#{json}"
     raise APN::Errors::ExceededMessageSizeError.new(message) if message.size.to_i > 256
     message
-  end
-  
-  def self.send_notifications
-    ActiveSupport::Deprecation.warn("The method APN::Notification.send_notifications is deprecated.  Use APN::App.send_notifications instead.")
-    APN::App.send_notfications
   end
   
 end # APN::Notification

@@ -1,0 +1,80 @@
+--- !ruby/object:Gem::Specification 
+name: apn_on_rails
+version: !ruby/object:Gem::Version 
+  version: 0.3.1
+platform: ruby
+authors: 
+- markbates
+autorequire: 
+bindir: bin
+cert_chain: []
+
+date: 2010-01-26 00:00:00 -05:00
+default_executable: 
+dependencies: 
+- !ruby/object:Gem::Dependency 
+  name: configatron
+  type: :runtime
+  version_requirement: 
+  version_requirements: !ruby/object:Gem::Requirement 
+    requirements: 
+    - - ">="
+      - !ruby/object:Gem::Version 
+        version: "0"
+    version: 
+description: "apn_on_rails was developed by: markbates"
+email: mark@markbates.com
+executables: []
+
+extensions: []
+
+extra_rdoc_files: 
+- README
+- LICENSE
+files: 
+- lib/apn_on_rails/apn_on_rails.rb
+- lib/apn_on_rails/app/models/apn/base.rb
+- lib/apn_on_rails/app/models/apn/device.rb
+- lib/apn_on_rails/app/models/apn/notification.rb
+- lib/apn_on_rails/libs/connection.rb
+- lib/apn_on_rails/libs/feedback.rb
+- lib/apn_on_rails/tasks/apn.rake
+- lib/apn_on_rails/tasks/db.rake
+- lib/apn_on_rails.rb
+- lib/apn_on_rails_tasks.rb
+- README
+- LICENSE
+- generators/apn_migrations_generator.rb
+- generators/templates/apn_migrations/001_create_apn_devices.rb
+- generators/templates/apn_migrations/002_create_apn_notifications.rb
+- generators/templates/apn_migrations/003_alter_apn_devices.rb
+has_rdoc: true
+homepage: http://www.metabates.com
+licenses: []
+
+post_install_message: 
+rdoc_options: []
+
+require_paths: 
+- lib
+required_ruby_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      version: "0"
+  version: 
+required_rubygems_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      version: "0"
+  version: 
+requirements: []
+
+rubyforge_project: magrathea
+rubygems_version: 1.3.5
+signing_key: 
+specification_version: 3
+summary: apn_on_rails
+test_files: []
+
