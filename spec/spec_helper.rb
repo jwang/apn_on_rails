@@ -1,5 +1,4 @@
-require 'rubygems'
-require 'spec'
+require 'rspec'
 require 'action_view'
 
 Dir.glob(File.join(File.dirname(__FILE__), 'extensions', '*.rb')).sort.each do |f|
@@ -16,7 +15,7 @@ end
 
 configatron.apn.cert = File.expand_path(File.join(File.dirname(__FILE__), 'rails_root', 'config', 'apple_push_notification_development.pem'))
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
   
   config.before(:all) do
     
