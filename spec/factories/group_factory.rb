@@ -3,7 +3,7 @@ module GroupFactory
   class << self
     
     def new(options = {})
-      app = AppFactory.create
+      app = APN::App.first
       options = {:app_id => app.id, :name => GroupFactory.random_name}.merge(options)
       return APN::Group.new(options)
     end

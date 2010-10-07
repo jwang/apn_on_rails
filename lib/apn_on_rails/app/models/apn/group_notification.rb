@@ -27,18 +27,18 @@ class APN::GroupNotification < APN::Base
   # Creates a Hash that will be the payload of an APN.
   # 
   # Example:
-  #   apn = APN::Notification.new
+  #   apn = APN::GroupNotification.new
   #   apn.badge = 5
   #   apn.sound = 'my_sound.aiff'
   #   apn.alert = 'Hello!'
   #   apn.apple_hash # => {"aps" => {"badge" => 5, "sound" => "my_sound.aiff", "alert" => "Hello!"}}
   #
   # Example 2: 
-  #   apn = APN::Notification.new
+  #   apn = APN::GroupNotification.new
   #   apn.badge = 0
   #   apn.sound = true
   #   apn.custom_properties = {"typ" => 1}
-  #   apn.apple_hast # => {"aps" => {"badge" => 0}}
+  #   apn.apple_hash # => {"aps" => {"badge" => 0, "sound" => 1.aiff},"typ" => "1"}
   def apple_hash
     result = {}
     result['aps'] = {}

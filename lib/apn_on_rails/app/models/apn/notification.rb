@@ -47,7 +47,7 @@ class APN::Notification < APN::Base
   #   apn.badge = 0
   #   apn.sound = true
   #   apn.custom_properties = {"typ" => 1}
-  #   apn.apple_hast # => {"aps" => {"badge" => 0}}
+  #   apn.apple_hash # => {"aps" => {"badge" => 0, "sound" => "1.aiff"}, "typ" => "1"}
   def apple_hash
     result = {}
     result['aps'] = {}
@@ -87,7 +87,7 @@ class APN::Notification < APN::Base
   
   def self.send_notifications
     ActiveSupport::Deprecation.warn("The method APN::Notification.send_notifications is deprecated.  Use APN::App.send_notifications instead.")
-    APN::App.send_notfications
+    APN::App.send_notifications
   end
   
 end # APN::Notification

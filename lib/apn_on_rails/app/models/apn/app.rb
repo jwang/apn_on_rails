@@ -49,6 +49,7 @@ class APN::App < APN::Base
     unless self.unsent_group_notifications.nil? || self.unsent_group_notifications.empty? 
       APN::Connection.open_for_delivery({:cert => self.cert}) do |conn, sock|
         unsent_group_notifications.each do |gnoty|
+          puts "number of devices is #{gnoty.devices.size}"
           gnoty.devices.each do |device|
             conn.write(gnoty.message_for_sending(device))
           end
