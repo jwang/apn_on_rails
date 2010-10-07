@@ -7,7 +7,7 @@ It supports:
 * Multiple iPhone apps managed from the same Rails application
 * Individual notifications and group notifications
 * Alerts, badges, sounds, and custom properties in notifications
-* In-App (or pull) notifications
+* Pull notifications
 
 h2. Feature Descriptions
 
@@ -24,10 +24,10 @@ contents across the entire group of devices.
 
 Notification Content Areas: Notifications may contain alerts, badges, sounds, and custom properties.
 
-In-App or Pull Notifications: This version of the gem supports an alternative notification method that relies
+Pull Notifications: This version of the gem supports an alternative notification method that relies
 on pulls from client devices and does not interact with the Apple Push Notification servers.  This feature
-may be used entirely independently of the push notification features.  In-App or Pull notifications may be
-created for an app.  A client app can query for the most recent in-app notification available since a 
+may be used entirely independently of the push notification features.  Pull notifications may be
+created for an app.  A client app can query for the most recent pull notification available since a 
 given date to retrieve any notifications waiting for it.  
 
 h2. Acknowledgements:
