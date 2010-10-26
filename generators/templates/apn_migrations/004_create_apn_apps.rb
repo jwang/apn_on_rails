@@ -12,7 +12,7 @@ class CreateApnApps < ActiveRecord::Migration # :nodoc:
   end
 
   def self.down
-    drop_table :apps
+    drop_table :apn_apps
     remove_column :apn_devices, :app_id
   end
 end
