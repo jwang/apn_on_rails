@@ -25,7 +25,7 @@ class APN::App < APN::Base
     end
     unless self.unsent_notifications.nil? || self.unsent_notifications.empty?
       APN::Connection.open_for_delivery({:cert => self.cert}) do |conn, sock|
-        unsent_notifications.each do |noty|
+        unsent_notifications.find_each do |noty|
           conn.write(noty.message_for_sending)
           noty.sent_at = Time.now
           noty.save
@@ -50,7 +50,7 @@ class APN::App < APN::Base
       APN::Connection.open_for_delivery({:cert => self.cert}) do |conn, sock|
         unsent_group_notifications.each do |gnoty|
           puts "number of devices is #{gnoty.devices.size}"
-          gnoty.devices.each do |device|
+          gnoty.devices.find_each do |device|
             conn.write(gnoty.message_for_sending(device))
           end
           gnoty.sent_at = Time.now
@@ -67,7 +67,7 @@ class APN::App < APN::Base
     end
     unless gnoty.nil?
       APN::Connection.open_for_delivery({:cert => self.cert}) do |conn, sock|
-        gnoty.devices.each do |device|
+        gnoty.devices.find_each do |device|
           conn.write(gnoty.message_for_sending(device))
         end
         gnoty.sent_at = Time.now

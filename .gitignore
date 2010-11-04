@@ -14,3 +14,4 @@ build/*
 profile
 spec/active_record/test.db
 .bundle
+**/.svn
