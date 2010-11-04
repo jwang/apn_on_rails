@@ -41,6 +41,7 @@ easily add Apple Push Notification (iPhone) support to your Rails application.
     "generators/templates/apn_migrations/007_create_device_groups.rb",
     "generators/templates/apn_migrations/008_create_apn_group_notifications.rb",
     "generators/templates/apn_migrations/009_create_pull_notifications.rb",
+    "generators/templates/apn_migrations/010_alter_apn_notifications.rb",
     "lib/apn_on_rails.rb",
     "lib/apn_on_rails/apn_on_rails.rb",
     "lib/apn_on_rails/app/models/apn/app.rb",
