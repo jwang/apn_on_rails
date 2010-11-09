@@ -166,6 +166,10 @@ describe APN::App do
       devices = [DeviceFactory.create(:app_id => app.id, :last_registered_at => 1.week.ago, :feedback_at => Time.now),
                  DeviceFactory.create(:app_id => app.id, :last_registered_at => 1.week.from_now, :feedback_at => Time.now)]
       puts "device ids are #{devices[0].id} and #{devices[1].id}"
+      devices[0].last_registered_at = 1.week.ago
+      devices[0].save
+      devices[1].last_registered_at = 1.week.from_now
+      devices[1].save
       APN::Feedback.should_receive(:devices).twice.and_return(devices)
       APN::App.should_receive(:all).and_return([app])
       app.should_receive(:cert).twice.and_return(app.apn_dev_cert)
@@ -181,6 +185,7 @@ describe APN::App do
     it 'should destroy devices that have a last_registered_at date that is before the feedback_at date that have no app' do 
       device = DeviceFactory.create(:app_id => nil, :last_registered_at => 1.week.ago, :feedback_at => Time.now)
       device.app_id = nil
+      device.last_registered_at = 1.week.ago
       device.save
       APN::Feedback.should_receive(:devices).and_return([device])
       APN::App.should_receive(:all).and_return([])
