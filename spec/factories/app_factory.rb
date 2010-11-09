@@ -9,9 +9,9 @@ module AppFactory
     end
     
     def create(options = {})
-      device = AppFactory.new(options)
-      device.save
-      return device
+      app = AppFactory.new(options)
+      app.save
+      return app
     end
     
     def random_cert

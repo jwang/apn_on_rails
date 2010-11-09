@@ -31,6 +31,7 @@ easily add Apple Push Notification (iPhone) support to your Rails application.
     "Rakefile",
     "VERSION",
     "apn_on_rails.gemspec",
+    "autotest/discover.rb",
     "generators/apn_migrations_generator.rb",
     "generators/templates/apn_migrations/001_create_apn_devices.rb",
     "generators/templates/apn_migrations/002_create_apn_notifications.rb",
@@ -108,8 +109,9 @@ easily add Apple Push Notification (iPhone) support to your Rails application.
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<configatron>, [">= 0"])
+      s.add_development_dependency(%q<autotest>, [">= 0"])
       s.add_development_dependency(%q<sqlite3-ruby>, [">= 0"])
-      s.add_development_dependency(%q<rspec>, [">= 2.0.0.beta.19"])
+      s.add_development_dependency(%q<rspec>, [">= 2.0.0"])
       s.add_development_dependency(%q<bundler>, [">= 1.0.0.rc.5"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.0.pre2"])
       s.add_development_dependency(%q<rcov>, [">= 0"])
@@ -117,8 +119,9 @@ easily add Apple Push Notification (iPhone) support to your Rails application.
       s.add_development_dependency(%q<activerecord>, ["~> 2.3.8"])
     else
       s.add_dependency(%q<configatron>, [">= 0"])
+      s.add_dependency(%q<autotest>, [">= 0"])
       s.add_dependency(%q<sqlite3-ruby>, [">= 0"])
-      s.add_dependency(%q<rspec>, [">= 2.0.0.beta.19"])
+      s.add_dependency(%q<rspec>, [">= 2.0.0"])
       s.add_dependency(%q<bundler>, [">= 1.0.0.rc.5"])
       s.add_dependency(%q<jeweler>, ["~> 1.5.0.pre2"])
       s.add_dependency(%q<rcov>, [">= 0"])
@@ -127,8 +130,9 @@ easily add Apple Push Notification (iPhone) support to your Rails application.
     end
   else
     s.add_dependency(%q<configatron>, [">= 0"])
+    s.add_dependency(%q<autotest>, [">= 0"])
     s.add_dependency(%q<sqlite3-ruby>, [">= 0"])
-    s.add_dependency(%q<rspec>, [">= 2.0.0.beta.19"])
+    s.add_dependency(%q<rspec>, [">= 2.0.0"])
     s.add_dependency(%q<bundler>, [">= 1.0.0.rc.5"])
     s.add_dependency(%q<jeweler>, ["~> 1.5.0.pre2"])
     s.add_dependency(%q<rcov>, [">= 0"])

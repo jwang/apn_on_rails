@@ -4,7 +4,7 @@ APN on Rails is a Ruby on Rails gem that allows you to easily add Apple Push Not
 support to your Rails application.  
 
 It supports: 
-* Multiple iPhone apps managed from the same Rails application
+* Multiple iPhone apps managed from the same Rails application as well as a legacy default "app" with certs stored in config
 * Individual notifications and group notifications
 * Alerts, badges, sounds, and custom properties in notifications
 * Pull notifications
@@ -14,13 +14,16 @@ h2. Feature Descriptions
 Multiple iPhone Apps: In previous versions of this gem a single Rails application was set up to 
 manage push notifications for a single iPhone app.  In many cases it is useful to have a single Rails
 app manage push notifications for multiple iPhone apps.  With the addition of an APN::App model, this 
-is now possible.  The certificates are now stored on instances of APN::APP and all devices are associated
-with a particular app.  
+is now possible.  The certificates are now stored on instances of APN::App and all devices are intended to be associated
+with a particular app.  For compatibility with existing implementations it is still possible to create devices that 
+are not associated with an APN::App and to send individual notifications to them using the certs stored in the 
+config directory.
 
 Individual and Group Notifications: Previous versions of this gem treated each notification individually
 and did not provide a built-in way to send a broadcast notification to a group of devices.  Group notifications
 are now built into the gem.  A group notification is associated with a group of devices and shares its 
-contents across the entire group of devices.  
+contents across the entire group of devices. (Group notifications are only available for groups of devices associated 
+with an APN::App) 
 
 Notification Content Areas: Notifications may contain alerts, badges, sounds, and custom properties.
 
@@ -29,6 +32,13 @@ on pulls from client devices and does not interact with the Apple Push Notificat
 may be used entirely independently of the push notification features.  Pull notifications may be
 created for an app.  A client app can query for the most recent pull notification available since a 
 given date to retrieve any notifications waiting for it.  
+
+h2. Version 0.4.1 Notes
+
+* Backwards compatibility.  0.4.0 required a manual upgrade to associate existing and new devices with an APN::App model.  This version allows continued use of devices that are associated with a default "app" that stores its certificates in the config directory.  This ought to allow upgrade to this version without code changes.  
+* Batched finds.  Finds on the APN::Device model that can return large numbers of records have been batched to limit memory impact. 
+* Custom properties migration.  At a pre-0.4.0 version the custom_properties attribute was added to the migration template that created the notifications table.  This introduced a potential problem for gem users who had previously run this migration.  The custom_properties alteration to the apn_notifications table has been moved to its own migration and should work regardless of whether your apn_notifications table already has a custom_properties attribute. 
+* last_registered_at changed to work intuitively.  The last_registered_at attribute of devices was being updated only on creation potentially causing a bug in which a device that opts out of APNs and then opts back in before apn_on_rails received feedback about it might miss a period of APNs that it should receive.
 
 h2. Acknowledgements:
 
@@ -121,7 +131,8 @@ Now, to create the tables you need for APN on Rails, run the following task:
 
 APN on Rails uses the Configatron gem, http://github.com/markbates/configatron/tree/master, 
 to configure itself. (With the change to multi-app support, the certifications are stored in the 
-database rather than in the config directory.  These configurations remain for now.) 
+database rather than in the config directory, however, it is still possible to use the default "app" and the certificates
+stored in the config directory.  For this setup, the following configurations apply.)
 APN on Rails has the following default configurations that you change as you
 see fit:
 
@@ -166,7 +177,7 @@ h2. Example (assuming you have created an app and stored your keys on it):
 
 <pre><code>
   $ ./script/console
-  >> app = APN::App.find(:first)
+  >> app = APN::App.create(:name => "My App", :apn_dev_cert => "PASTE YOUR DEV CERT HERE", :apn_prod_cert => "PASTE YOUR PROD CERT HERE")
   >> device = APN::Device.create(:token => "XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX",:app_id => app.id)
   >> notification = APN::Notification.new
   >> notification.device = device

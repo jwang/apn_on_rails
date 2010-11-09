@@ -23,15 +23,7 @@ class APN::App < APN::Base
       raise APN::Errors::MissingCertificateError.new
       return
     end
-    unless self.unsent_notifications.nil? || self.unsent_notifications.empty?
-      APN::Connection.open_for_delivery({:cert => self.cert}) do |conn, sock|
-        unsent_notifications.find_each do |noty|
-          conn.write(noty.message_for_sending)
-          noty.sent_at = Time.now
-          noty.save
-        end
-      end
-    end
+    APN::App.send_notifications_for_cert(self.cert, self.id)
   end
   
   def self.send_notifications
@@ -39,6 +31,32 @@ class APN::App < APN::Base
     apps.each do |app|
       app.send_notifications
     end
+    global_cert = File.read(configatron.apn.cert)
+    if global_cert
+      send_notifications_for_cert(global_cert, nil)
+    end
+  end
+  
+  def self.send_notifications_for_cert(the_cert, app_id)
+    # unless self.unsent_notifications.nil? || self.unsent_notifications.empty?
+      if (app_id == nil)
+        conditions = "app_id is null"
+      else 
+        conditions = ["app_id = ?", app_id]
+      end
+      begin
+        APN::Connection.open_for_delivery({:cert => the_cert}) do |conn, sock|
+          APN::Device.find_each(:conditions => conditions) do |dev|
+            dev.unsent_notifications.each do |noty|
+              conn.write(noty.message_for_sending)
+              noty.sent_at = Time.now
+              noty.save
+            end
+          end
+        end
+      rescue
+      end
+    # end   
   end
   
   def send_group_notifications
@@ -49,7 +67,6 @@ class APN::App < APN::Base
     unless self.unsent_group_notifications.nil? || self.unsent_group_notifications.empty? 
       APN::Connection.open_for_delivery({:cert => self.cert}) do |conn, sock|
         unsent_group_notifications.each do |gnoty|
-          puts "number of devices is #{gnoty.devices.size}"
           gnoty.devices.find_each do |device|
             conn.write(gnoty.message_for_sending(device))
           end
@@ -98,11 +115,7 @@ class APN::App < APN::Base
       raise APN::Errors::MissingCertificateError.new
       return
     end
-    APN::Feedback.devices(self.cert).each do |device|
-      if device.last_registered_at < device.feedback_at
-        device.destroy
-      end
-    end
+    APN::App.process_devices_for_cert(self.cert)
   end # process_devices
   
   def self.process_devices
@@ -110,6 +123,22 @@ class APN::App < APN::Base
     apps.each do |app|
       app.process_devices
     end
+    global_cert = File.read(configatron.apn.cert)
+    if global_cert
+      APN::App.process_devices_for_cert(global_cert)
+    end
+  end
+  
+  def self.process_devices_for_cert(the_cert)
+    puts "in APN::App.process_devices_for_cert"
+    APN::Feedback.devices(the_cert).each do |device|
+      if device.last_registered_at < device.feedback_at
+        puts "device #{device.id} -> #{device.last_registered_at} < #{device.feedback_at}"
+        device.destroy
+      else 
+        puts "device #{device.id} -> #{device.last_registered_at} not < #{device.feedback_at}"
+      end
+    end 
   end
     
 end

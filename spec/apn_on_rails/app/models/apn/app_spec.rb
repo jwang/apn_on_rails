@@ -10,26 +10,58 @@ describe APN::App do
       device = DeviceFactory.create({:app_id => app.id})
       notifications = [NotificationFactory.create({:device_id => device.id}), 
                        NotificationFactory.create({:device_id => device.id})]
-      notifications.each_with_index do |notify, i|
-        notify.stub(:message_for_sending).and_return("message-#{i}")
-        notify.should_receive(:sent_at=).with(instance_of(Time))
-        notify.should_receive(:save)
-      end
-    
-      APN::App.should_receive(:all).and_return([app])
-      app.should_receive(:unsent_notifications).at_least(:once).and_return(notifications)
+                       
+     notifications.each_with_index do |notify, i|
+       notify.stub(:message_for_sending).and_return("message-#{i}")
+       notify.should_receive(:sent_at=).with(instance_of(Time))
+       notify.should_receive(:save)
+     end
+      
+      APN::App.should_receive(:all).once.and_return([app])                 
       app.should_receive(:cert).twice.and_return(app.apn_dev_cert)
+      
+      APN::Device.should_receive(:find_each).twice.and_yield(device)
+      
+      device.should_receive(:unsent_notifications).and_return(notifications,[])
+      
       
       ssl_mock = mock('ssl_mock')
       ssl_mock.should_receive(:write).with('message-0')
       ssl_mock.should_receive(:write).with('message-1')
-      APN::Connection.should_receive(:open_for_delivery).and_yield(ssl_mock, nil)
-    
+      APN::Connection.should_receive(:open_for_delivery).twice.and_yield(ssl_mock, nil)
       APN::App.send_notifications
     
     end
   
   end
+  
+  describe 'send_notifications_not_associated_with_an_app' do 
+    
+    it 'should send unsent notifications that are associated with devices that are not with any app' do 
+      RAILS_ENV = 'staging'
+      device = DeviceFactory.create
+      device.app_id = nil
+      device.save
+      APN::App.all.each { |a| a.destroy }
+      notifications = [NotificationFactory.create({:device_id => device.id}), 
+                       NotificationFactory.create({:device_id => device.id})]
+                   
+       notifications.each_with_index do |notify, i|
+         notify.stub(:message_for_sending).and_return("message-#{i}")
+         notify.should_receive(:sent_at=).with(instance_of(Time))
+         notify.should_receive(:save)
+       end  
+   
+       APN::Device.should_receive(:find_each).and_yield(device)
+       device.should_receive(:unsent_notifications).and_return(notifications)
+  
+       ssl_mock = mock('ssl_mock')
+       ssl_mock.should_receive(:write).with('message-0')
+       ssl_mock.should_receive(:write).with('message-1')
+       APN::Connection.should_receive(:open_for_delivery).and_yield(ssl_mock, nil)
+       APN::App.send_notifications
+    end
+  end               
   
   describe 'send_group_notifications' do
   
@@ -133,7 +165,8 @@ describe APN::App do
       app = AppFactory.create
       devices = [DeviceFactory.create(:app_id => app.id, :last_registered_at => 1.week.ago, :feedback_at => Time.now),
                  DeviceFactory.create(:app_id => app.id, :last_registered_at => 1.week.from_now, :feedback_at => Time.now)]
-      APN::Feedback.should_receive(:devices).and_return(devices)
+      puts "device ids are #{devices[0].id} and #{devices[1].id}"
+      APN::Feedback.should_receive(:devices).twice.and_return(devices)
       APN::App.should_receive(:all).and_return([app])
       app.should_receive(:cert).twice.and_return(app.apn_dev_cert)
       lambda {
@@ -141,6 +174,20 @@ describe APN::App do
       }.should change(APN::Device, :count).by(-1)
     end
     
+  end
+  
+  describe 'process_devices for global app' do 
+    
+    it 'should destroy devices that have a last_registered_at date that is before the feedback_at date that have no app' do 
+      device = DeviceFactory.create(:app_id => nil, :last_registered_at => 1.week.ago, :feedback_at => Time.now)
+      device.app_id = nil
+      device.save
+      APN::Feedback.should_receive(:devices).and_return([device])
+      APN::App.should_receive(:all).and_return([])
+      lambda { 
+        APN::App.process_devices
+      }.should change(APN::Device, :count).by(-1)
+    end
   end
   
   describe 'nil cert when processing devices' do 

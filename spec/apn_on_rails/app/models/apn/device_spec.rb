@@ -40,19 +40,19 @@ describe APN::Device do
     
   end
   
-  describe 'before_save' do
+  describe 'before_create' do
     
-    it 'should set the last_registered_at date to Time.now if nil' do
+    it 'should set the last_registered_at date to Time.now' do
       time = Time.now
       Time.stub(:now).and_return(time)
       device = DeviceFactory.create
       device.last_registered_at.should_not be_nil
       device.last_registered_at.to_s.should == time.to_s
       
-      ago = 1.week.ago
-      device = DeviceFactory.create(:last_registered_at => ago)
-      device.last_registered_at.should_not be_nil
-      device.last_registered_at.to_s.should == ago.to_s
+      # ago = 1.week.ago
+      # device = DeviceFactory.create(:last_registered_at => ago)
+      # device.last_registered_at.should_not be_nil
+      # device.last_registered_at.to_s.should == ago.to_s
     end
     
   end
