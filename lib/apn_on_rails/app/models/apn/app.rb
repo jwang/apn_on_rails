@@ -54,7 +54,8 @@ class APN::App < APN::Base
             end
           end
         end
-      rescue
+      rescue Exception => e
+        log_connection_exception(e)
       end
     # end   
   end
@@ -139,6 +140,12 @@ class APN::App < APN::Base
         puts "device #{device.id} -> #{device.last_registered_at} not < #{device.feedback_at}"
       end
     end 
+  end
+  
+  
+  protected
+  def log_connection_exception(ex)
+    puts ex.message
   end
     
 end
