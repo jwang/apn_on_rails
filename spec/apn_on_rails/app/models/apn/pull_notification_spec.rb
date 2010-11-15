@@ -21,16 +21,43 @@ describe APN::PullNotification do
       noty1 = PullNotificationFactory.create({:app_id => app.id})
       noty1.created_at = Time.now + 1.week
       noty1.save
-      APN::PullNotification.latest_since(app.id,Time.now - 1.week).should == noty1 
+      latest = APN::PullNotification.latest_since(app.id,Time.now - 1.week)
+      puts "latest is #{latest}"
+      latest.should == noty1 
     end
 
   end
   
-  describe 'latest_since_with_no_date' do 
+  describe 'latest_since_with_no_date_when_there_is_no_launch_notification' do 
     it 'should return the most recent pull notification because no date is given' do 
       app = APN::App.first
       noty1 = APN::PullNotification.find(:first, :order => "created_at DESC")
       APN::PullNotification.latest_since(app.id).should == noty1
+    end
+  end
+  
+  describe 'latest_since_with_no_date_when_there_is_a_launch_notification' do
+    it 'should return the launch notification even though there is a more recent notification' do
+      app = APN::App.first
+      noty_launch = PullNotificationFactory.create({:app_id => app.id, :launch_notification => true})
+      noty_launch.created_at = Time.now - 1.week
+      noty_launch.save
+      noty_nonlaunch = PullNotificationFactory.create({:app_id => app.id})
+      APN::PullNotification.latest_since(app.id).should == noty_launch
+    end
+  end
+  
+  describe 'older_non_launch_noty_with_newer_launch_noty' do 
+    it 'should return the older non launch notification even though a newer launch notification exists' do
+      APN::PullNotification.all.each { |n| n.destroy }
+      app = APN::App.first
+      noty_launch = PullNotificationFactory.create({:app_id => app.id, :launch_notification => true})
+      puts "noty_launch id is #{noty_launch.id}"
+      noty_nonlaunch = PullNotificationFactory.create({:app_id => app.id})
+      noty_nonlaunch.created_at = Time.now - 1.week
+      noty_nonlaunch.save
+      puts "noty_nonlaunch id is #{noty_nonlaunch.id}"
+      APN::PullNotification.latest_since(app.id, Time.now - 2.weeks).should == noty_nonlaunch
     end
   end
   
