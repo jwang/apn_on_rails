@@ -61,4 +61,40 @@ describe APN::PullNotification do
     end
   end
   
+  describe 'all_since_date_with_date_given' do 
+    it 'should return all the non-launch notifications after the given date but not the ones before it' do 
+      APN::PullNotification.all.each { |n| n.destroy }
+      app = APN::App.first
+      noty_launch = PullNotificationFactory.create({:app_id => app.id, :launch_notification => true})
+      noty_launch.created_at = Time.now - 2.weeks
+      noty_launch.save
+      old_noty = PullNotificationFactory.create({:app_id => app.id})
+      old_noty.created_at = Time.now - 2.weeks
+      old_noty.save
+      new_noty_one = PullNotificationFactory.create({:app_id => app.id})
+      new_noty_one.created_at = Time.now - 1.day
+      new_noty_one.save
+      new_noty_two = PullNotificationFactory.create({:app_id => app.id})
+      APN::PullNotification.all_since(app.id, Time.now - 1.week).should == [new_noty_two,new_noty_one]
+    end
+  end
+  
+  describe 'all_since_with_no_since_date_given' do 
+    it 'should return all of the non-launch notifications' do 
+      APN::PullNotification.all.each { |n| n.destroy }
+      app = APN::App.first
+      noty_launch = PullNotificationFactory.create({:app_id => app.id, :launch_notification => true})
+      noty_launch.created_at = Time.now - 2.weeks
+      noty_launch.save
+      old_noty = PullNotificationFactory.create({:app_id => app.id})
+      old_noty.created_at = Time.now - 2.weeks
+      old_noty.save
+      new_noty_one = PullNotificationFactory.create({:app_id => app.id})
+      new_noty_one.created_at = Time.now - 1.day
+      new_noty_one.save
+      new_noty_two = PullNotificationFactory.create({:app_id => app.id})
+      APN::PullNotification.all_since(app.id, Time.now - 3.weeks).should == [new_noty_two,new_noty_one,old_noty]
+    end
+  end
+  
 end
