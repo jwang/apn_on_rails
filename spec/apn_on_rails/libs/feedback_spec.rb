@@ -9,14 +9,12 @@ describe APN::Feedback do
       @device = DeviceFactory.create
       @cert = mock('cert_mock')
       
-      @data_mock = mock('data_mock')
-      @data_mock.should_receive(:strip!)
+      @data_mock = mock('data_mock')      
       @data_mock.should_receive(:unpack).with('N1n1H140').and_return([@time.to_i, 12388, @device.token.delete(' ')])
       
-      @ssl_mock = mock('ssl_mock')
+      @ssl_mock = mock('ssl_mock')      
+      @ssl_mock.should_receive(:read).with(38).twice.and_return(@data_mock, nil)
       @sock_mock = mock('sock_mock')
-      @sock_mock.should_receive(:gets).twice.and_return(@data_mock, nil)
-      
     end
     
     it 'should an Array of devices that need to be processed' do
