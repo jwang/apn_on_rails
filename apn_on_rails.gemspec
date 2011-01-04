@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{apn_on_rails}
-  s.version = "0.4.1"
+  s.version = "0.4.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["markbates", "Rebecca Nesson"]
@@ -43,6 +43,7 @@ easily add Apple Push Notification (iPhone) support to your Rails application.
     "generators/templates/apn_migrations/009_create_pull_notifications.rb",
     "generators/templates/apn_migrations/010_alter_apn_notifications.rb",
     "generators/templates/apn_migrations/011_make_device_token_index_nonunique.rb",
+    "generators/templates/apn_migrations/012_add_launch_notification_to_apn_pull_notifications.rb",
     "lib/apn_on_rails.rb",
     "lib/apn_on_rails/apn_on_rails.rb",
     "lib/apn_on_rails/app/models/apn/app.rb",
